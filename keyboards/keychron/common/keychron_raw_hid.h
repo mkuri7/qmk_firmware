@@ -86,3 +86,6 @@ enum {
 };
 
 void kc_raw_hid_send(uint8_t src, uint8_t *data, uint8_t len);
+
+/* Keymap-level extension point. Return true when the report is fully handled. */
+bool keychron_raw_hid_receive_user(uint8_t src, uint8_t *data, uint8_t length);

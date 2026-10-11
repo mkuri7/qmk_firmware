@@ -45,6 +45,10 @@
 extern void dfu_info_rx(uint8_t *data, uint8_t length);
 extern void nkro_rx(uint8_t *data, uint8_t length);
 
+__attribute__((weak)) bool keychron_raw_hid_receive_user(uint8_t src, uint8_t *data, uint8_t length) {
+    return false;
+}
+
 void get_support_feature(uint8_t *data) {
     data[0] = 0;
     data[1] = FEATURE_DEFAULT_LAYER
@@ -273,6 +277,9 @@ bool kc_raw_hid_rx(uint8_t src, uint8_t *data, uint8_t length) {
 
 #    if defined(VIA_ENABLE)
 bool via_command_kb(uint8_t src, uint8_t *data, uint8_t length) {
+    if (keychron_raw_hid_receive_user(src, data, length)) {
+        return true;
+    }
     return kc_raw_hid_rx(src, data, length);
 }
 
@@ -282,6 +289,9 @@ void via_raw_hid_send(uint8_t src, uint8_t *data, uint8_t len) {
 }
 #    else
 void raw_hid_receive(uint8_t src, uint8_t *data, uint8_t length) {
+    if (keychron_raw_hid_receive_user(src, data, length)) {
+        return;
+    }
     kc_raw_hid_rx(src, data, length);
 }
 #    endif
